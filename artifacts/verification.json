@@ -1,0 +1,67 @@
+{
+  "recorded_at": "2026-11-26T15:32:45.630360+00:00",
+  "platform": "Windows",
+  "python": "3.10.20",
+  "database": {
+    "server_version": "16.11",
+    "listen_addresses": "127.0.0.1",
+    "port": "55432",
+    "default_transaction_read_only": "on",
+    "statement_timeout": "2s"
+  },
+  "pytest": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "65",
+    "time": "36.949",
+    "timestamp": "2026-11-26T20:52:12.828287+05:30"
+  },
+  "evaluation_summaries": [
+    {
+      "mode": "baseline",
+      "total": 105,
+      "passed": 105,
+      "skipped": 0,
+      "expected_queries": 78,
+      "sql_valid_count": 78,
+      "execution_correct": 78,
+      "nonquery_count": 27,
+      "nonquery_correct": 27,
+      "mean_latency_ms": 120.715,
+      "p95_latency_ms": 223.225
+    },
+    {
+      "mode": "schema-aware",
+      "total": 105,
+      "passed": 105,
+      "skipped": 0,
+      "expected_queries": 78,
+      "sql_valid_count": 78,
+      "execution_correct": 78,
+      "nonquery_count": 27,
+      "nonquery_correct": 27,
+      "mean_latency_ms": 119.664,
+      "p95_latency_ms": 221.658
+    }
+  ],
+  "adversarial_summary": {
+    "total": 40,
+    "rejected": 40,
+    "skipped": 0
+  },
+  "secret_scan": {
+    "publishable_text_files_scanned": 53,
+    "local_secret_matches": 0
+  },
+  "docker": {
+    "daemon_reachable": true,
+    "server_version": "29.6.1",
+    "compose_config_validated": true,
+    "containers_built_or_run": false,
+    "base_images_cached": false
+  },
+  "live_ollama_executed": false,
+  "static_typecheck_executed": false
+}

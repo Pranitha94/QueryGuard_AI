@@ -1,0 +1,151 @@
+{
+  "api": "http://127.0.0.1:8000",
+  "ui": "http://127.0.0.1:8501",
+  "requests": [
+    {
+      "question": "Show revenue by category",
+      "response": {
+        "provider": "SIMULATED / TEMPLATE (not an LLM)",
+        "mode": "schema-aware",
+        "status": "accepted",
+        "message": "AST reviewed; executed read-only.",
+        "columns": [
+          "category",
+          "revenue"
+        ],
+        "rows": [
+          [
+            "Electronics",
+            24975.0
+          ],
+          [
+            "Home",
+            22365.0
+          ],
+          [
+            "Office",
+            19755.0
+          ]
+        ],
+        "row_count": 3,
+        "sql": "SELECT \"p\".\"category\" AS \"category\", SUM(\"i\".\"quantity\" * \"i\".\"unit_price\") AS \"revenue\" FROM \"analytics\".\"order_items\" AS \"i\" JOIN \"analytics\".\"products\" AS \"p\" ON \"i\".\"product_id\" = \"p\".\"product_id\" JOIN \"analytics\".\"orders\" AS \"o\" ON \"i\".\"order_id\" = \"o\".\"order_id\" WHERE \"o\".\"status\" = 'completed' GROUP BY \"p\".\"category\" ORDER BY \"revenue\" DESC, \"category\" LIMIT 200",
+        "summary": "Returned 3 rows and 2 columns.",
+        "latency_ms": 180.551,
+        "request_id": "ceb614f57c9c5507cfdb2d63"
+      }
+    },
+    {
+      "question": "Show monthly revenue for 2024",
+      "response": {
+        "provider": "SIMULATED / TEMPLATE (not an LLM)",
+        "mode": "schema-aware",
+        "status": "accepted",
+        "message": "AST reviewed; executed read-only.",
+        "columns": [
+          "month",
+          "revenue"
+        ],
+        "rows": [
+          [
+            "2024-01-01T00:00:00+05:30",
+            3617.25
+          ],
+          [
+            "2024-02-01T00:00:00+05:30",
+            3209.25
+          ],
+          [
+            "2024-03-01T00:00:00+05:30",
+            2866.0
+          ],
+          [
+            "2024-04-01T00:00:00+05:30",
+            3301.0
+          ],
+          [
+            "2024-05-01T00:00:00+05:30",
+            2661.5
+          ],
+          [
+            "2024-06-01T00:00:00+05:30",
+            3158.0
+          ],
+          [
+            "2024-07-01T00:00:00+05:30",
+            3682.5
+          ],
+          [
+            "2024-08-01T00:00:00+05:30",
+            3486.75
+          ],
+          [
+            "2024-09-01T00:00:00+05:30",
+            3165.75
+          ],
+          [
+            "2024-10-01T00:00:00+05:30",
+            3850.75
+          ],
+          [
+            "2024-11-01T00:00:00+05:30",
+            2953.0
+          ],
+          [
+            "2024-12-01T00:00:00+05:30",
+            2133.5
+          ]
+        ],
+        "row_count": 12,
+        "sql": "SELECT DATE_TRUNC('MONTH', \"o\".\"order_date\") AS \"month\", SUM(\"i\".\"quantity\" * \"i\".\"unit_price\") AS \"revenue\" FROM \"analytics\".\"orders\" AS \"o\" JOIN \"analytics\".\"order_items\" AS \"i\" ON \"o\".\"order_id\" = \"i\".\"order_id\" WHERE \"o\".\"status\" = 'completed' AND \"o\".\"order_date\" >= CAST('2024-01-01' AS DATE) AND \"o\".\"order_date\" < CAST('2025-01-01' AS DATE) GROUP BY DATE_TRUNC('MONTH', \"o\".\"order_date\") ORDER BY \"month\" LIMIT 200",
+        "summary": "Returned 12 rows and 2 columns.",
+        "latency_ms": 173.553,
+        "request_id": "4805d6451200fb9baa625033"
+      }
+    },
+    {
+      "question": "Show revenue",
+      "response": {
+        "provider": "SIMULATED / TEMPLATE (not an LLM)",
+        "mode": "schema-aware",
+        "status": "clarification",
+        "message": "Specify a supported metric, grouping, status, and date range. Revenue means completed-order item totals; profit is unavailable.",
+        "columns": [],
+        "rows": [],
+        "row_count": 0,
+        "sql": null,
+        "latency_ms": 51.9,
+        "request_id": "3fe807a09a15a6cc1abbcaf2"
+      }
+    },
+    {
+      "question": "Read the admin password",
+      "response": {
+        "provider": "SIMULATED / TEMPLATE (not an LLM)",
+        "mode": "schema-aware",
+        "status": "refused",
+        "message": "Only synthetic analytics questions are supported.",
+        "columns": [],
+        "rows": [],
+        "row_count": 0,
+        "sql": null,
+        "latency_ms": 46.176,
+        "request_id": "df8690dfd9033cb6f5879f83"
+      }
+    }
+  ],
+  "health": {
+    "status": "ok",
+    "database": "ready",
+    "provider": "SIMULATED / TEMPLATE (not an LLM)",
+    "trust_boundary": "local single-user demo"
+  },
+  "history_isolation": true,
+  "schema_tables": [
+    "customers",
+    "order_items",
+    "orders",
+    "products"
+  ],
+  "evaluation_http_status": 200,
+  "ui_http_status": 200
+}
