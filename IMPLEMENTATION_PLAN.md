@@ -8,7 +8,9 @@
 
 Strict vertical RED -> GREEN cycles recorded in docs/VERIFICATION.md. No commits, pushes, external paid APIs, model downloads, unrelated services or personal data. Docker/live LLM execution explicitly unverified if unavailable.
 
-## Executed outcome — November 26, 2026
+## Implementation-stage outcome — November 26, 2026 (historical)
+
+Publication and successful Ubuntu GitHub CI were subsequently verified by the parent; see `docs/VERIFICATION.md` and `artifacts/github-ci.json`. The implementation-stage limits below describe the earlier checkpoint.
 
 Native delivery gates completed: seeded isolated PostgreSQL 16.11 on loopback 55432; guarded FastAPI service on loopback 8000; actual Streamlit/Plotly workspace on loopback 8501; final regression 65 passed / 0 failed / 0 skipped (one installed-library deprecation warning); 105 independently reviewable benchmark records passed in each simulated template setting; 40/40 policy attacks rejected. Real HTTP smoke, browser screenshots, lint/format/compile, dependency consistency and local-secret exclusion checks executed. Actual evidence and exact RED/GREEN commands are in docs/VERIFICATION.md and artifacts/.
 

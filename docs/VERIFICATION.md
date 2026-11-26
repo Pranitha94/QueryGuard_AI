@@ -1,6 +1,14 @@
 # Executed verification — November 26, 2026
 
-Scope: **QueryGuard AI only**, `D:/Hermes/Pranitha_projects/queryguard-ai`. No commits/pushes, unrelated project changes, real business/customer data, paid APIs or model downloads. All commands below ran in this repository using its isolated `.venv/Scripts/python.exe` (Python 3.10.20), not shared `python`/`pip`.
+Scope: **QueryGuard AI only**, `D:/Hermes/Pranitha_projects/queryguard-ai`. No unrelated project changes, real business/customer data, paid APIs or model downloads. Implementation-stage work was not committed/pushed until parent review and the publication checkpoint below. Native commands used this repository's isolated `.venv/Scripts/python.exe` (Python 3.10.20), not shared `python`/`pip`; remote CI used its fresh Ubuntu Python environment.
+
+## Publication and Linux CI checkpoint
+
+The reviewed implementation (`a6bd6a0`) and parent-run evidence (`59d4c97`) were pushed to `Pranitha94/QueryGuard_AI`. A subsequent `git ls-remote origin refs/heads/main` read matched the full local SHA `59d4c97641cffcf526fb1e3e4d3d4cd8bd812180`.
+
+GitHub Actions run **45850412986** completed with **success** for that SHA. Its job API separately confirmed successful fresh dependency installation on Ubuntu, PostgreSQL service setup and bootstrap, lint, formatting, compilation, pytest, evaluation, and artifact upload. Exact remote status and step outcomes are saved in `artifacts/github-ci.json`. This supersedes the historical unexecuted-CI/Linux-installation notes below. It does **not** verify the full application Docker Compose stack or live LLM inference.
+
+Before this documentation-only publication update, all **38 reviewed executable/configuration files** still matched their approved canonical hashes. No application code changed, so the prior test and review approval is retained without another redundant full local suite. This documentation commit uses `[skip ci]`; the passing CI result is explicitly tied to the tested SHA above.
 
 ## Parent-run acceptance checkpoint
 

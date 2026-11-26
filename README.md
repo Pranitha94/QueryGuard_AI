@@ -122,7 +122,7 @@ Adapter uses local `127.0.0.1:11434/api/chat`, JSON schema `format`, `stream=fal
 
 Query outcomes: `accepted`, `clarification`, `refused`, `rejected`, `provider_error`, `execution_error`. Safe outcome responses use HTTP 200 so callers inspect `status`; transport/validation/auth/capacity failures use 4xx/503. Validation errors do not echo input. Session tokens isolate history but are **not authentication**; anyone able to reach the API can create a session. Defaults bind loopback. Do not expose these ports publicly.
 
-## Docker and CI recipes — supplied, not executed
+## Docker recipe (unexecuted) and verified GitHub CI
 
 ```bash
 # Copy .env.example to .env.docker; replace BOTH placeholders with distinct
@@ -132,7 +132,7 @@ docker compose --env-file .env.docker up --build
 
 Compose has a dedicated internal-only DB network, one-shot setup, runtime API with reader DSN only, UI with API URL only, loopback published HTTP ports and healthchecks. The DB has no host port. Native and Docker demos use the same HTTP ports: stop one before starting the other. Docker daemon was reachable and Compose configuration validated, but `postgres:16.11` and `python:3.10-slim` base images were absent; no large image/dependency downloads or container build/run were undertaken. Do not treat these files as a tested deployment. Pinning image digests and dependency hashes is left for a release process.
 
-`.github/workflows/verify.yml` supplies an ephemeral PostgreSQL service, seeded integration tests, lint/compile and actual benchmark artifact generation. No workflow was published or remotely run. `requirements.lock.txt` captures exact installed direct/transitive versions; clean-room/Linux dependency installation was not executed here. The lock is not a vulnerability audit or hash-verified supply-chain guarantee.
+`.github/workflows/verify.yml` was published and **passed on an Ubuntu GitHub-hosted runner** for commit `59d4c97641cffcf526fb1e3e4d3d4cd8bd812180`: [executed workflow](https://github.com/Pranitha94/QueryGuard_AI/actions/runs/45850412986). Verified successful steps include fresh locked dependency installation, the PostgreSQL service and bootstrap, lint/format/compile, pytest, benchmark evaluation and evidence upload. This verifies the configured Linux CI path, not a full Docker Compose application deployment. `requirements.lock.txt` captures exact installed direct/transitive versions; it is not a vulnerability audit or hash-verified supply-chain guarantee. Machine-readable remote status is in `artifacts/github-ci.json`.
 
 ## Evaluation and security reading
 

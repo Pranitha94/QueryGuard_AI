@@ -1,0 +1,85 @@
+{
+  "observed_at": "2026-11-26T15:38:00.639583+00:00",
+  "repository": "Pranitha94/QueryGuard_AI",
+  "run_id": 45850412986,
+  "head_sha": "59d4c97641cffcf526fb1e3e4d3d4cd8bd812180",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Pranitha94/QueryGuard_AI/actions/runs/45850412986",
+  "jobs": [
+    {
+      "id": 140014993322,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements.lock.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python scripts/bootstrap.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m ruff check queryguard scripts tests workspace.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m ruff format --check queryguard scripts tests workspace.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m compileall -q queryguard scripts workspace.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pytest -q --junitxml=artifacts/pytest.xml",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python scripts/evaluate.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "reviewed_executable_and_configuration_files_unchanged": 38,
+  "scope": "Fresh Ubuntu CI dependency installation, PostgreSQL service, bootstrap, lint, format, compilation, pytest, evaluation, and evidence upload; not full application Docker Compose verification."
+}
