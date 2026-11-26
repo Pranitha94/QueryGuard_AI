@@ -1,0 +1,242 @@
+[
+  {
+    "id": "stacked",
+    "sql": "SELECT 1; DELETE FROM analytics.orders",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "delete",
+    "sql": "DELETE FROM analytics.orders",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "update_cte",
+    "sql": "WITH x AS (UPDATE analytics.orders SET status='pending' RETURNING order_id) SELECT order_id FROM x",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "insert_cte",
+    "sql": "WITH x AS (INSERT INTO analytics.products VALUES (99,'x','Home',1) RETURNING product_id) SELECT product_id FROM x",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "drop",
+    "sql": "DROP TABLE analytics.orders",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "select_into",
+    "sql": "SELECT order_id INTO analytics.stolen FROM analytics.orders",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "lock",
+    "sql": "SELECT order_id FROM analytics.orders FOR UPDATE",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "catalog",
+    "sql": "SELECT rolname FROM pg_catalog.pg_roles",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "information_schema",
+    "sql": "SELECT table_name FROM information_schema.tables",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "public_schema",
+    "sql": "SELECT order_id FROM public.orders",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "database_qualifier",
+    "sql": "SELECT order_id FROM otherdb.analytics.orders",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "sleep",
+    "sql": "SELECT pg_sleep(20)",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "file_read",
+    "sql": "SELECT pg_read_file('/etc/passwd')",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "config",
+    "sql": "SELECT set_config('search_path','public',false)",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "dblink",
+    "sql": "SELECT dblink_connect('host=evil')",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "generate_series",
+    "sql": "SELECT x FROM generate_series(1,1000000000) x",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "recursive",
+    "sql": "WITH RECURSIVE r AS (SELECT 1 AS n UNION ALL SELECT n+1 FROM r) SELECT n FROM r",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "star",
+    "sql": "SELECT * FROM analytics.customers",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "qualified_star",
+    "sql": "SELECT c.* FROM analytics.customers c",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "unknown_column",
+    "sql": "SELECT password FROM analytics.customers",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "cte_unknown",
+    "sql": "WITH c AS (SELECT password FROM analytics.customers) SELECT password FROM c",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "nested_catalog",
+    "sql": "SELECT customer_id FROM analytics.customers WHERE EXISTS (SELECT 1 FROM pg_catalog.pg_roles)",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "union_catalog",
+    "sql": "SELECT customer_label FROM analytics.customers UNION SELECT rolname FROM pg_catalog.pg_roles",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "cast_regclass",
+    "sql": "SELECT 'pg_authid'::regclass",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "cast_custom",
+    "sql": "SELECT 'x'::public.evil",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "copy",
+    "sql": "COPY analytics.customers TO '/tmp/leak'",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "explain",
+    "sql": "EXPLAIN ANALYZE SELECT order_id FROM analytics.orders",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "negative_limit",
+    "sql": "SELECT order_id FROM analytics.orders LIMIT -1",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "expression_limit",
+    "sql": "SELECT order_id FROM analytics.orders LIMIT (SELECT 1)",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "cross_join",
+    "sql": "SELECT c.customer_id FROM analytics.customers c CROSS JOIN analytics.orders o",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "constant_join",
+    "sql": "SELECT o.order_id FROM analytics.orders o JOIN analytics.customers c ON TRUE",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "lateral",
+    "sql": "SELECT c.customer_id FROM analytics.customers c, LATERAL (SELECT 1) x",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "window",
+    "sql": "SELECT ROW_NUMBER() OVER () FROM analytics.orders",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "distinct_on",
+    "sql": "SELECT DISTINCT ON (status) status FROM analytics.orders",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "quoted_trick",
+    "sql": "SELECT \"password;drop\" FROM analytics.customers",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "unauthorized_function",
+    "sql": "SELECT current_setting('data_directory')",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "comment_function",
+    "sql": "SELECT pg_/*comment*/sleep(10)",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "offset",
+    "sql": "SELECT order_id FROM analytics.orders OFFSET 1000000",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "huge_literal",
+    "sql": "SELECT 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  },
+  {
+    "id": "complex_expression",
+    "sql": "SELECT 1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1",
+    "expected_status": "rejected",
+    "category": "adversarial"
+  }
+]

@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:16.11
+    environment:
+      POSTGRES_DB: queryguard
+      POSTGRES_USER: qg_admin
+      POSTGRES_PASSWORD: ${QG_ADMIN_PASSWORD:?set QG_ADMIN_PASSWORD in .env.docker}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    volumes:
+      - qg_data:/var/lib/postgresql/data
+    networks: [database]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U qg_admin -d queryguard"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  setup:
+    build: .
+    command: [python, scripts/bootstrap.py]
+    environment:
+      QG_ADMIN_DSN: postgresql://qg_admin:${QG_ADMIN_PASSWORD}@db:5432/queryguard
+      QG_READER_PASSWORD: ${QG_READER_PASSWORD:?set QG_READER_PASSWORD in .env.docker}
+    depends_on:
+      db: {condition: service_healthy}
+    networks: [database]
+  api:
+    build: .
+    environment:
+      QG_DATABASE_DSN: postgresql://qg_reader:${QG_READER_PASSWORD}@db:5432/queryguard
+      QG_PROVIDER: template
+    ports: ["127.0.0.1:8000:8000"]
+    depends_on:
+      setup: {condition: service_completed_successfully}
+    networks: [database, frontend]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health',timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 10
+  ui:
+    build: .
+    command: [python, -m, streamlit, run, workspace.py, --server.address, 0.0.0.0, --server.port, "8501"]
+    environment:
+      QG_API_URL: http://api:8000
+    ports: ["127.0.0.1:8501:8501"]
+    depends_on:
+      api: {condition: service_healthy}
+    networks: [frontend]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health',timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 10
+networks:
+  database:
+    internal: true
+  frontend: {}
+volumes:
+  qg_data: {}
