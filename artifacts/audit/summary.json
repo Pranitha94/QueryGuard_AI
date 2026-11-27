@@ -65,5 +65,11 @@
     "SIMULATED/TEMPLATE benchmark, not actual LLM quality",
     "No live Ollama inference or full application Compose build/run",
     "Source checkout supported; standalone application wheel unsupported"
-  ]
+  ],
+  "exact_clone_success": true,
+  "exact_clone_tests": 95,
+  "tested_revision": "a6f02579a310ee0ce38c0a62bd6972cea8e0b646",
+  "ci_run_id": 45978053452,
+  "ci_conclusion": "success",
+  "audit_closed": true
 }

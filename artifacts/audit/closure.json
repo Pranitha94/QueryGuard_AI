@@ -1,0 +1,62 @@
+{
+  "closed_at": "2026-11-27T10:07:40.456194+00:00",
+  "tested_revision": "a6f02579a310ee0ce38c0a62bd6972cea8e0b646",
+  "independent_review_passed": true,
+  "native_tests_passed": 95,
+  "clone_tests_passed": 95,
+  "clone_failed": 0,
+  "clone_skipped": 0,
+  "clone_evaluation": [
+    {
+      "mode": "baseline",
+      "total": 105,
+      "passed": 105,
+      "skipped": 0,
+      "expected_queries": 78,
+      "sql_valid_count": 78,
+      "execution_correct": 78,
+      "nonquery_count": 27,
+      "nonquery_correct": 27,
+      "mean_latency_ms": 100.685,
+      "p95_latency_ms": 200.006
+    },
+    {
+      "mode": "schema-aware",
+      "total": 105,
+      "passed": 105,
+      "skipped": 0,
+      "expected_queries": 78,
+      "sql_valid_count": 78,
+      "execution_correct": 78,
+      "nonquery_count": 27,
+      "nonquery_correct": 27,
+      "mean_latency_ms": 98.274,
+      "p95_latency_ms": 141.379
+    }
+  ],
+  "clone_http_smoke_passed": true,
+  "github_ci": {
+    "run_id": 45978053452,
+    "conclusion": "success",
+    "tested_sha": "a6f02579a310ee0ce38c0a62bd6972cea8e0b646"
+  },
+  "isolated_ports_closed": {
+    "55437": true,
+    "8004": true,
+    "18507": true
+  },
+  "requested_documents": 8,
+  "interview_questions": 40,
+  "demo_script_seconds": 120,
+  "post_review_corrections": [
+    ".gitattributes enforces LF checkout for shell scripts; verified in the Windows clone.",
+    "A test clears ambient QG_API_URL/QG_UI_URL before asserting port defaults; application Python/SQL behavior unchanged."
+  ],
+  "scope_notes": [
+    "Original clone install timed out once; one bounded recovery completed without copying an existing environment.",
+    "Existing Windows checkout needed tracked shell files regenerated after adding attributes.",
+    "Explicit exports inside Git Bash were used for the isolated service launch, matching README; the native-Python-to-MSYS harness did not preserve its environment overrides.",
+    "Clone verification wrote its default artifacts; this is retained as evidence rather than falsely called source-clean.",
+    "No live Ollama inference, full application Compose run, standalone wheel or production-readiness claim."
+  ]
+}

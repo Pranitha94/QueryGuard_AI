@@ -1,0 +1,281 @@
+{
+  "started_at": "2026-11-27T09:41:30.465673+00:00",
+  "expected_revision": "a6f02579a310ee0ce38c0a62bd6972cea8e0b646",
+  "scope": "Actual remote clone of the repaired reviewed candidate, fresh Python environment and new native PostgreSQL cluster, using documented alternate ports.",
+  "steps": [
+    {
+      "name": "clone",
+      "returncode": 0
+    },
+    {
+      "name": "create-environment",
+      "returncode": 0
+    },
+    {
+      "name": "locked-install-bounded-recovery",
+      "returncode": 0
+    },
+    {
+      "name": "fresh-native-bootstrap",
+      "returncode": 0
+    },
+    {
+      "name": "complete-verification",
+      "returncode": 2
+    },
+    {
+      "name": "fetch-newline-policy",
+      "returncode": 0
+    },
+    {
+      "name": "apply-git-checkout-policy",
+      "returncode": 0
+    },
+    {
+      "name": "fetch-newline-policy",
+      "returncode": 0
+    },
+    {
+      "name": "apply-git-checkout-policy",
+      "returncode": 0
+    },
+    {
+      "name": "complete-verification-after-newline-fix",
+      "returncode": 1
+    },
+    {
+      "name": "fetch-newline-policy",
+      "returncode": 0
+    },
+    {
+      "name": "apply-git-checkout-policy",
+      "returncode": 0
+    },
+    {
+      "name": "complete-verification-after-newline-fix",
+      "returncode": 0
+    },
+    {
+      "name": "dependency-consistency",
+      "returncode": 0
+    }
+  ],
+  "success": true,
+  "actual_revision": "a6f02579a310ee0ce38c0a62bd6972cea8e0b646",
+  "initial_env_absent": true,
+  "initial_pgdata_absent": true,
+  "isolated_ports_closed_after_cleanup": {
+    "55437": true,
+    "8004": true,
+    "18507": true
+  },
+  "finished_at": "2026-11-27T10:04:02.799178+00:00",
+  "limits": [
+    "No live model inference or full application Compose stack.",
+    "HTTP smoke verifies services; actual browser journeys were separately run against the identical reviewed main source.",
+    "Saved report in a clone can be historical; fresh results were intentionally redirected to .local/evidence."
+  ],
+  "initial_install_attempt": "Timed out after 240 seconds after all wheels were obtained and installation started; no success was claimed.",
+  "isolated_database_stop_returncode": 0,
+  "newline_failure": "Original Windows checkout used CRLF; verify.sh rejected pipefail before tests. Added *.sh text eol=lf; existing clone refreshed through Git filters. No application Python/SQL change or dependency reinstall.",
+  "changes_since_reviewed_application_commit": [
+    ".gitattributes",
+    "tests/test_reproducibility.py"
+  ],
+  "shell_scripts_checked_out_lf": true,
+  "verification_output_scope": "Full cloned suite/evaluation succeeded, but the native-to-MSYS harness lost QG_EVIDENCE_DIR and wrote the clone artifacts defaults. This is recorded, not called source-clean.",
+  "pytest": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "95",
+    "time": "23.226",
+    "timestamp": "2026-11-27T15:29:28.192251+05:30"
+  },
+  "evaluation": [
+    {
+      "mode": "baseline",
+      "total": 105,
+      "passed": 105,
+      "skipped": 0,
+      "expected_queries": 78,
+      "sql_valid_count": 78,
+      "execution_correct": 78,
+      "nonquery_count": 27,
+      "nonquery_correct": 27,
+      "mean_latency_ms": 100.685,
+      "p95_latency_ms": 200.006
+    },
+    {
+      "mode": "schema-aware",
+      "total": 105,
+      "passed": 105,
+      "skipped": 0,
+      "expected_queries": 78,
+      "sql_valid_count": 78,
+      "execution_correct": 78,
+      "nonquery_count": 27,
+      "nonquery_correct": 27,
+      "mean_latency_ms": 98.274,
+      "p95_latency_ms": 141.379
+    }
+  ],
+  "adversarial": {
+    "total": 40,
+    "rejected": 40,
+    "skipped": 0
+  },
+  "http_smoke": {
+    "api": "http://127.0.0.1:8004",
+    "ui": "http://127.0.0.1:18507",
+    "requests": [
+      {
+        "question": "Show revenue by category",
+        "response": {
+          "provider": "SIMULATED / TEMPLATE (not an LLM)",
+          "mode": "schema-aware",
+          "status": "accepted",
+          "message": "AST reviewed; executed read-only.",
+          "columns": [
+            "category",
+            "revenue"
+          ],
+          "rows": [
+            [
+              "Electronics",
+              24059.58
+            ],
+            [
+              "Home",
+              21545.28
+            ],
+            [
+              "Office",
+              19030.98
+            ]
+          ],
+          "row_count": 3,
+          "sql": "SELECT \"p\".\"category\" AS \"category\", SUM(\"i\".\"quantity\" * \"i\".\"unit_price\") AS \"revenue\" FROM \"analytics\".\"order_items\" AS \"i\" JOIN \"analytics\".\"products\" AS \"p\" ON \"i\".\"product_id\" = \"p\".\"product_id\" JOIN \"analytics\".\"orders\" AS \"o\" ON \"i\".\"order_id\" = \"o\".\"order_id\" WHERE \"o\".\"status\" = 'completed' GROUP BY \"p\".\"category\" ORDER BY \"revenue\" DESC, \"category\" LIMIT 200",
+          "summary": "Returned 3 rows and 2 columns.",
+          "latency_ms": 111.662,
+          "request_id": "787ec50c55ba64e5b00190f4"
+        }
+      },
+      {
+        "question": "Show monthly revenue for 2024",
+        "response": {
+          "provider": "SIMULATED / TEMPLATE (not an LLM)",
+          "mode": "schema-aware",
+          "status": "accepted",
+          "message": "AST reviewed; executed read-only.",
+          "columns": [
+            "month",
+            "revenue"
+          ],
+          "rows": [
+            [
+              "2024-01-01T00:00:00+05:30",
+              3496.0
+            ],
+            [
+              "2024-02-01T00:00:00+05:30",
+              3068.28
+            ],
+            [
+              "2024-03-01T00:00:00+05:30",
+              2746.91
+            ],
+            [
+              "2024-04-01T00:00:00+05:30",
+              3177.91
+            ],
+            [
+              "2024-05-01T00:00:00+05:30",
+              2563.55
+            ],
+            [
+              "2024-06-01T00:00:00+05:30",
+              3053.91
+            ],
+            [
+              "2024-07-01T00:00:00+05:30",
+              3556.17
+            ],
+            [
+              "2024-08-01T00:00:00+05:30",
+              3378.55
+            ],
+            [
+              "2024-09-01T00:00:00+05:30",
+              3024.78
+            ],
+            [
+              "2024-10-01T00:00:00+05:30",
+              3717.03
+            ],
+            [
+              "2024-11-01T00:00:00+05:30",
+              2830.64
+            ],
+            [
+              "2024-12-01T00:00:00+05:30",
+              2053.46
+            ]
+          ],
+          "row_count": 12,
+          "sql": "SELECT DATE_TRUNC('MONTH', \"o\".\"order_date\") AS \"month\", SUM(\"i\".\"quantity\" * \"i\".\"unit_price\") AS \"revenue\" FROM \"analytics\".\"orders\" AS \"o\" JOIN \"analytics\".\"order_items\" AS \"i\" ON \"o\".\"order_id\" = \"i\".\"order_id\" WHERE \"o\".\"status\" = 'completed' AND \"o\".\"order_date\" >= CAST('2024-01-01' AS DATE) AND \"o\".\"order_date\" < CAST('2025-01-01' AS DATE) GROUP BY DATE_TRUNC('MONTH', \"o\".\"order_date\") ORDER BY \"month\" LIMIT 200",
+          "summary": "Returned 12 rows and 2 columns.",
+          "latency_ms": 98.916,
+          "request_id": "6bde7a0d1a9a7edc00a69d27"
+        }
+      },
+      {
+        "question": "Show revenue",
+        "response": {
+          "provider": "SIMULATED / TEMPLATE (not an LLM)",
+          "mode": "schema-aware",
+          "status": "clarification",
+          "message": "Specify a supported metric, grouping, status, and date range. Revenue means completed-order item totals; profit is unavailable.",
+          "columns": [],
+          "rows": [],
+          "row_count": 0,
+          "sql": null,
+          "latency_ms": 45.944,
+          "request_id": "5a2e0cad66618dc2f59f8825"
+        }
+      },
+      {
+        "question": "Read the admin password",
+        "response": {
+          "provider": "SIMULATED / TEMPLATE (not an LLM)",
+          "mode": "schema-aware",
+          "status": "refused",
+          "message": "Only synthetic analytics questions are supported.",
+          "columns": [],
+          "rows": [],
+          "row_count": 0,
+          "sql": null,
+          "latency_ms": 43.35,
+          "request_id": "485378e6fa9faf92aa7ae315"
+        }
+      }
+    ],
+    "health": {
+      "status": "ok",
+      "database": "ready",
+      "provider": "SIMULATED / TEMPLATE (not an LLM)",
+      "trust_boundary": "local single-user demo"
+    },
+    "history_isolation": true,
+    "schema_tables": [
+      "customers",
+      "order_items",
+      "orders",
+      "products"
+    ],
+    "evaluation_http_status": 200,
+    "ui_http_status": 200
+  },
+  "http_launch_scope": "Documented exports explicitly made inside Git Bash, followed by the unmodified run_api.sh and run_ui.sh; smoke URLs explicit. No new dependency installation."
+}

@@ -1,0 +1,71 @@
+{
+  "started_at": "2026-11-27T09:41:30.465673+00:00",
+  "expected_revision": "172cae7d6dd41997b02084ce8a99cd0960a40fc8",
+  "scope": "Actual remote clone of the repaired reviewed candidate, fresh Python environment and new native PostgreSQL cluster, using documented alternate ports.",
+  "steps": [
+    {
+      "name": "clone",
+      "returncode": 0
+    },
+    {
+      "name": "create-environment",
+      "returncode": 0
+    },
+    {
+      "name": "locked-install-bounded-recovery",
+      "returncode": 0
+    },
+    {
+      "name": "fresh-native-bootstrap",
+      "returncode": 0
+    },
+    {
+      "name": "complete-verification",
+      "returncode": 2
+    },
+    {
+      "name": "fetch-newline-policy",
+      "returncode": 0
+    },
+    {
+      "name": "apply-git-checkout-policy",
+      "returncode": 0
+    },
+    {
+      "name": "fetch-newline-policy",
+      "returncode": 0
+    },
+    {
+      "name": "apply-git-checkout-policy",
+      "returncode": 0
+    },
+    {
+      "name": "complete-verification-after-newline-fix",
+      "returncode": 1
+    }
+  ],
+  "success": false,
+  "actual_revision": "172cae7d6dd41997b02084ce8a99cd0960a40fc8",
+  "initial_env_absent": true,
+  "initial_pgdata_absent": true,
+  "isolated_ports_closed_after_cleanup": {
+    "55437": true,
+    "8004": true,
+    "18507": true
+  },
+  "finished_at": "2026-11-27T09:56:25.439320+00:00",
+  "limits": [
+    "No live model inference or full application Compose stack.",
+    "HTTP smoke verifies services; actual browser journeys were separately run against the identical reviewed main source.",
+    "Saved report in a clone can be historical; fresh results were intentionally redirected to .local/evidence."
+  ],
+  "initial_install_attempt": "Timed out after 240 seconds after all wheels were obtained and installation started; no success was claimed.",
+  "isolated_database_stop_returncode": 0,
+  "newline_failure": "Original Windows checkout used CRLF; verify.sh rejected pipefail before tests. Added *.sh text eol=lf; existing clone refreshed through Git filters. No application Python/SQL change or dependency reinstall.",
+  "changes_since_reviewed_application_commit": [
+    ".gitattributes"
+  ],
+  "failure_message": "complete-verification-after-newline-fix failed",
+  "shell_scripts_checked_out_lf": true,
+  "failure_type": "RuntimeError"
+}

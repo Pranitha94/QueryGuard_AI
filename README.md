@@ -75,6 +75,8 @@ bash scripts/run_ui.sh
 .venv/Scripts/python.exe scripts/smoke.py --output .local/http-smoke.json
 ```
 
+The repository enforces LF for shell scripts with `.gitattributes`, including on Windows with Git autocrlf enabled. An older existing checkout may retain CRLF copies after pulling only the new policy; preserve local edits and use a fresh checkout or regenerate those tracked scripts through Git.
+
 Port settings accept integers from 1 to 65535. Existing native `.env` retains its database endpoint; conflicting overrides are refused instead of redirecting an existing cluster. `QG_API_URL` points the UI at the alternate API; an alternate API bind port alone does not change the UI destination.
 
 For an already running dedicated external PostgreSQL server, supply **process environment** `QG_ADMIN_DSN`, `QG_DATABASE_DSN` and `QG_READER_PASSWORD`. Both DSNs must explicitly target `queryguard`; the reader must be `qg_reader`, use the matching password and refer to the same endpoint. Bootstrap now creates an absent `queryguard` database through maintenance `postgres`; admin therefore needs maintenance access and database-creation privilege. No manual DB precreation is needed. External mode is selected by process environment, not an arbitrary `.env` file. Never copy somebody else's generated credentials. Linux external-server setup uses Python 3.11/3.12, `.venv/bin/python` and the same scripts; only the configured backend CI path is verified on Linux, not every desktop installation.

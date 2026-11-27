@@ -1,5 +1,13 @@
 # Actual test and evaluation results — QueryGuard AI audit
 
+## Final closure — executed
+
+The independent correction review passed. The repaired published checkout at `a6f02579a310ee0ce38c0a62bd6972cea8e0b646` subsequently passed **95 tests**, both **105/105 simulated-template evaluation settings**, **40/40 policy attacks**, dependency consistency, and isolated API/UI smoke checks against its newly initialized PostgreSQL instance. GitHub Actions run **45978053452** completed successfully for that exact SHA. All isolated verification services were stopped and ports rechecked closed. Evidence: `artifacts/audit/final-review.json`, `exact-clone.json`, `github-ci.json` and `closure.json`.
+
+The clone check exposed and corrected Windows shell-script CRLF checkout and an ambient-URL assumption in one test. Those post-review changes were limited to `.gitattributes` and two test-isolation lines; application Python/SQL behavior did not change. Dependency installation timed out once before a bounded recovery; no interrupted command is counted as success. The existing clone needed Git to regenerate its shell files under the new LF policy. Explicit exports inside Git Bash were used for isolated service launch; the native-to-MSYS harness did not preserve overrides. Clone verification wrote its default artifacts and is not falsely described as source-clean. The supported path remains a source checkout, not an application wheel.
+
+This follow-up changes only documentation/evidence and uses `[skip ci]`; the passing CI SHA above is stated explicitly rather than presented as a run of the later documentation commit.
+
 ## Provenance and scope
 
 Audit base: `19472ece9771c5530439365d57fe95aa6b176f6a`. Native candidate: Windows 11, isolated Python **3.11.6**, PostgreSQL **16.11**, Pillow **13.0.0**, Streamlit **1.67.0**. Database and HTTP services are dedicated loopback synthetic-demo instances. Current machine evidence is `artifacts/audit/summary.json`; historical release results are not substituted for this audit.

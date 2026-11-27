@@ -1,0 +1,32 @@
+{
+  "started_at": "2026-11-27T09:41:30.465673+00:00",
+  "expected_revision": "203c71906fe3fbd464daf77e6db3f4c752d7ff79",
+  "scope": "Actual remote clone of the repaired reviewed candidate, fresh Python environment and new native PostgreSQL cluster, using documented alternate ports.",
+  "steps": [
+    {
+      "name": "clone",
+      "returncode": 0
+    },
+    {
+      "name": "create-environment",
+      "returncode": 0
+    }
+  ],
+  "success": false,
+  "actual_revision": "203c71906fe3fbd464daf77e6db3f4c752d7ff79",
+  "initial_env_absent": true,
+  "initial_pgdata_absent": true,
+  "failure_type": "TimeoutExpired",
+  "failure_stage": "create-environment",
+  "isolated_ports_closed_after_cleanup": {
+    "55437": true,
+    "8004": true,
+    "18507": true
+  },
+  "finished_at": "2026-11-27T09:46:13.130972+00:00",
+  "limits": [
+    "No live model inference or full application Compose stack.",
+    "HTTP smoke verifies services; actual browser journeys were separately run against the identical reviewed main source.",
+    "Saved report in a clone can be historical; fresh results were intentionally redirected to .local/evidence."
+  ]
+}

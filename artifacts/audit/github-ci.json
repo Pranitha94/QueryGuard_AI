@@ -1,0 +1,80 @@
+{
+  "observed_at": "2026-11-27T10:07:37.162947+00:00",
+  "tested_sha": "a6f02579a310ee0ce38c0a62bd6972cea8e0b646",
+  "run_id": 45978053452,
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Pranitha94/QueryGuard_AI/actions/runs/45978053452",
+  "jobs": [
+    {
+      "name": "verify",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install -r requirements.lock.txt",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python scripts/bootstrap.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m ruff check queryguard scripts tests workspace.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m ruff format --check queryguard scripts tests workspace.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m compileall -q queryguard scripts workspace.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pytest -q --junitxml=artifacts/pytest.xml",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python scripts/evaluate.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

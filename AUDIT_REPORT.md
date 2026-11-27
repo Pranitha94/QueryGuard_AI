@@ -1,5 +1,13 @@
 # Comprehensive audit — QueryGuard AI
 
+## Final closure — executed
+
+The independent correction review passed. The repaired published checkout at `a6f02579a310ee0ce38c0a62bd6972cea8e0b646` subsequently passed **95 tests**, both **105/105 simulated-template evaluation settings**, **40/40 policy attacks**, dependency consistency, and isolated API/UI smoke checks against its newly initialized PostgreSQL instance. GitHub Actions run **45978053452** completed successfully for that exact SHA. All isolated verification services were stopped and ports rechecked closed. Evidence: `artifacts/audit/final-review.json`, `exact-clone.json`, `github-ci.json` and `closure.json`.
+
+The clone check exposed and corrected Windows shell-script CRLF checkout and an ambient-URL assumption in one test. Those post-review changes were limited to `.gitattributes` and two test-isolation lines; application Python/SQL behavior did not change. Dependency installation timed out once before a bounded recovery; no interrupted command is counted as success. The existing clone needed Git to regenerate its shell files under the new LF policy. Explicit exports inside Git Bash were used for isolated service launch; the native-to-MSYS harness did not preserve overrides. Clone verification wrote its default artifacts and is not falsely described as source-clean. The supported path remains a source checkout, not an application wheel.
+
+This follow-up changes only documentation/evidence and uses `[skip ci]`; the passing CI SHA above is stated explicitly rather than presented as a run of the later documentation commit.
+
 ## Executive verdict
 
 **A working, substantially tested local portfolio demonstration—not a production-ready analytics service or demonstrated general-purpose LLM agent.** The audit found real boundary, correctness, setup and documentation defects despite the earlier green release. Confirmed critical/high-priority remediation was prioritized, and several medium/low defects were also corrected with regression tests.
@@ -43,6 +51,8 @@ Detailed commands/counts: [TEST_RESULTS.md](TEST_RESULTS.md). Scope of implement
 |A17|Medium operational limitation|Provider inactivity timeout is not a total request deadline|Remains explicitly documented; no public/production availability claim|
 |A18|Low product/architecture limitation|Rich SQL narration, large-schema retrieval gains and production-scale operational behavior were not demonstrated|Not counted as verified features; clear scope/limitations retained rather than placeholders|
 |A19|Low visual/accessibility robustness|The two-row evaluation canvas grid intermittently painted blank in browser captures despite correct accessibility values|Replaced with a simpler plain HTML summary table; component regression and actual visible-table values verified without resize|
+|A20|Medium Windows reproduction|Git autocrlf converted shell scripts to CRLF and Git Bash rejected pipefail|Fixed with *.sh text eol=lf; corrected checkout completed the integrated suite and HTTP checks|
+|A21|Low test isolation|An inherited endpoint URL invalidated a test that expected port-only defaults|The test now clears ambient URL overrides; targeted regression, cloned 95-test suite and CI passed|
 
 No critical defect was reproduced. Priorities reflect the documented local/synthetic trust boundary, not a claim that internet exposure would be safe.
 
