@@ -2,6 +2,7 @@
 
 import json
 import re
+from contextlib import nullcontext
 from typing import Literal, Protocol
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -107,15 +108,29 @@ class OllamaProvider:
                 "messages": [{"role": "user", "content": prompt}],
                 "options": {"temperature": 0, "num_predict": 1024},
             }
-            if self.client is None:
-                with httpx.Client(timeout=self.timeout, trust_env=False) as client:
-                    response = client.post(self.base_url + "/api/chat", json=payload)
-            else:
-                response = self.client.post(self.base_url + "/api/chat", json=payload, timeout=self.timeout)
-            response.raise_for_status()
-            if len(response.content) > 65536:
-                raise ValueError("Oversized response")
-            return Proposal.model_validate_json(response.json()["message"]["content"])
+            context = (
+                httpx.Client(timeout=self.timeout, trust_env=False)
+                if self.client is None
+                else nullcontext(self.client)
+            )
+            with context as client:
+                with client.stream(
+                    "POST",
+                    self.base_url + "/api/chat",
+                    json=payload,
+                    timeout=self.timeout,
+                    headers={"Accept-Encoding": "identity"},
+                ) as response:
+                    response.raise_for_status()
+                    # Reject compressed bodies instead of allowing an oversized decoded allocation.
+                    if response.headers.get("content-encoding", "identity").lower() != "identity":
+                        raise ValueError("Encoded provider responses are not supported")
+                    content = bytearray()
+                    for chunk in response.iter_bytes():
+                        if len(content) + len(chunk) > 65536:
+                            raise ValueError("Oversized response")
+                        content.extend(chunk)
+            return Proposal.model_validate_json(json.loads(content)["message"]["content"])
         except Exception:
             raise ProviderError("Provider did not return a valid structured response") from None
 

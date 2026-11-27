@@ -8,3 +8,6 @@ __pycache__
 .ruff_cache
 *.log
 .streamlit/secrets.toml
+build
+dist
+*.egg-info

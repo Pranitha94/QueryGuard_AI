@@ -2,7 +2,7 @@
 name = "queryguard-ai"
 version = "1.0.0"
 description = "Guarded PostgreSQL analytics with a clearly simulated template demo and optional Ollama"
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.11,<3.13"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

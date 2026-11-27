@@ -20,6 +20,7 @@ services:
     environment:
       QG_ADMIN_DSN: postgresql://qg_admin:${QG_ADMIN_PASSWORD}@db:5432/queryguard
       QG_READER_PASSWORD: ${QG_READER_PASSWORD:?set QG_READER_PASSWORD in .env.docker}
+      QG_DATABASE_DSN: postgresql://qg_reader:${QG_READER_PASSWORD:?set QG_READER_PASSWORD in .env.docker}@db:5432/queryguard
     depends_on:
       db: {condition: service_healthy}
     networks: [database]

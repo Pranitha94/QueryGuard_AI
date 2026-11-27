@@ -1,0 +1,65 @@
+{
+  "scope": "Original remote 19472ec was actually cloned; repaired worktree was exported into a fresh source directory and new Python3.11 environment, not falsely labelled a later remote clone.",
+  "repaired_source_export": {
+    "python": "3.11.6",
+    "full_suite_tests_passed": 93,
+    "warning_count": 1,
+    "elapsed_seconds_reported": 28.83,
+    "evaluation_cases_per_mode": 105,
+    "evaluation_correct_per_mode": 105,
+    "adversarial_rejected": 40,
+    "native_bootstrap_exit": 0,
+    "source_library_wheel_build_exit": 1,
+    "source_checkout_only": true
+  },
+  "comparison_to_current_worktree": {
+    "executable_configuration_files_checked": 40,
+    "differences": [
+      {
+        "path": ".dockerignore",
+        "difference": "absent from repaired export"
+      },
+      {
+        "path": ".github/workflows/verify.yml",
+        "difference": "absent from repaired export"
+      },
+      {
+        "path": ".gitignore",
+        "difference": "changed since repaired export"
+      },
+      {
+        "path": ".streamlit/config.toml",
+        "difference": "absent from repaired export"
+      },
+      {
+        "path": "Dockerfile",
+        "difference": "absent from repaired export"
+      },
+      {
+        "path": "compose.yaml",
+        "difference": "absent from repaired export"
+      },
+      {
+        "path": "scripts/bootstrap.py",
+        "difference": "changed since repaired export"
+      },
+      {
+        "path": "scripts/record_verification.py",
+        "difference": "changed since repaired export"
+      },
+      {
+        "path": "tests/test_reproducibility.py",
+        "difference": "changed since repaired export"
+      },
+      {
+        "path": "workspace.py",
+        "difference": "changed since repaired export"
+      }
+    ]
+  },
+  "limitations": [
+    "Repaired export evidence predates the additional bootstrap measured-count regression and final documentation/configuration changes listed above.",
+    "Parent separately ran complete current worktree suite and evaluation.",
+    "Full application wheel and full application Compose execution remain unsupported/unverified respectively."
+  ]
+}

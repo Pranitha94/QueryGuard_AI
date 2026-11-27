@@ -22,11 +22,14 @@ SELECT i, 'Product-'||lpad(i::text,2,'0'),
  (ARRAY['Electronics','Office','Home'])[1+(i%3)], (15+i*7.25)::numeric(10,2)
 FROM generate_series(1,12) i ON CONFLICT DO NOTHING;
 INSERT INTO analytics.orders
-SELECT i, 1+(i%48), DATE '2024-01-01'+((i*7)%730),
+SELECT i, CASE WHEN i<=120 THEN 1+((i-1)%8) ELSE 9+((i-121)%40) END,
+ DATE '2024-01-01'+((i*7)%730),
  (ARRAY['completed','completed','completed','pending','cancelled'])[1+(i%5)]
-FROM generate_series(1,360) i ON CONFLICT DO NOTHING;
+FROM generate_series(1,360) i
+ON CONFLICT(order_id) DO UPDATE SET customer_id=EXCLUDED.customer_id;
 INSERT INTO analytics.order_items
-SELECT o.order_id, p.product_id, 1+((o.order_id+j)%5), p.price
+SELECT o.order_id, p.product_id, 1+((o.order_id+j)%5),
+ round(p.price*(1+((o.order_id%5)-2)*0.05),2)
 FROM analytics.orders o CROSS JOIN generate_series(0,1) j
 JOIN analytics.products p ON p.product_id=1+((o.order_id+j*5)%12)
-ON CONFLICT DO NOTHING;
+ON CONFLICT(order_id,product_id) DO UPDATE SET unit_price=EXCLUDED.unit_price;

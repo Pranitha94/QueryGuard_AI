@@ -14,14 +14,69 @@ def test_csv_neutralizes_formula_cells_and_headers():
     assert chart_kind(["total"], [[360]]) == "metric"
 
 
-def test_streamlit_renders_without_errors():
+def test_streamlit_renders_without_errors(monkeypatch):
+    """Deterministic component render; real API/database journeys run separately."""
+    import httpx
     from streamlit.testing.v1 import AppTest
 
     from queryguard.db import ROOT
 
+    original = httpx.Client
+
+    def handler(request):
+        fixtures = {
+            "/health": {"provider": "SIMULATED COMPONENT TEST DOUBLE"},
+            "/sessions": {"token": "synthetic-render-session"},
+            "/schema": {"tables": {}, "relationships": []},
+            "/history": {"items": []},
+        }
+        return (
+            httpx.Response(200, json=fixtures[request.url.path])
+            if request.url.path in fixtures
+            else httpx.Response(404)
+        )
+
+    monkeypatch.setattr(
+        httpx, "Client", lambda **kwargs: original(transport=httpx.MockTransport(handler), **kwargs)
+    )
     app = AppTest.from_file(str(ROOT / "workspace.py")).run(timeout=30)
     assert not app.exception
     assert any("QueryGuard" in title.value for title in app.title)
+    assert len(app.tabs) == 4
+
+
+def test_evaluation_summary_is_accessible_plain_table(monkeypatch):
+    import json
+
+    import httpx
+    from streamlit.testing.v1 import AppTest
+
+    from queryguard.db import ROOT
+
+    original = httpx.Client
+    saved = json.loads((ROOT / "artifacts/evaluation.json").read_text())
+    report = {**saved, "runs": [{"mode": r["mode"], "summary": r["summary"]} for r in saved["runs"]]}
+
+    def handler(request):
+        fixtures = {
+            "/health": {"provider": "SIMULATED TABLE COMPONENT DOUBLE"},
+            "/sessions": {"token": "synthetic-table-session"},
+            "/schema": {"tables": {}, "relationships": []},
+            "/history": {"items": []},
+            "/evaluation": report,
+        }
+        return httpx.Response(200, json=fixtures[request.url.path])
+
+    monkeypatch.setattr(
+        httpx, "Client", lambda **kwargs: original(transport=httpx.MockTransport(handler), **kwargs)
+    )
+    app = AppTest.from_file(str(ROOT / "workspace.py")).run(timeout=30)
+    assert not app.exception
+    assert len(app.table) == 1, "Two-row evaluation should not depend on an offscreen canvas grid"
+    values = app.table[0].value
+    assert list(values["Passed / total"]) == [
+        f"{r['summary']['passed']} / {r['summary']['total']}" for r in report["runs"]
+    ]
 
 
 def test_workspace_renders_questions_and_provider_messages_as_plain_text(monkeypatch):

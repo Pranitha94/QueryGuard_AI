@@ -1,5 +1,6 @@
 """Run honest template baseline/schema-aware evaluations and SQL attacks on local PostgreSQL."""
 
+import argparse
 import hashlib
 import json
 import platform
@@ -18,6 +19,9 @@ from queryguard.providers import TemplateProvider
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "artifacts")
+    options = parser.parse_args()
     verify_runtime()
     questions_path = ROOT / "benchmarks/questions.json"
     attacks_path = ROOT / "benchmarks/adversarial.json"
@@ -29,7 +33,7 @@ def main():
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "provider": TemplateProvider.label,
         "live_llm_executed": False,
-        "dataset": "fixed synthetic seed v1",
+        "dataset": "fixed synthetic seed v2 (historical prices and unequal customer order counts)",
         "python": platform.python_version(),
         "postgresql": db_version,
         "sqlglot": version("sqlglot"),
@@ -83,8 +87,8 @@ def main():
         "rejected": sum(x["passed"] for x in report["adversarial"]),
         "skipped": 0,
     }
-    artifact = ROOT / "artifacts"
-    artifact.mkdir(exist_ok=True)
+    artifact = options.output_dir
+    artifact.mkdir(parents=True, exist_ok=True)
     (artifact / "evaluation.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     lines = [
         "# Executed evaluation",
@@ -116,7 +120,7 @@ def main():
     if any(not r["passed"] for run in report["runs"] for r in run["records"]) or any(
         not r["passed"] for r in report["adversarial"]
     ):
-        raise SystemExit("Evaluation failures; inspect artifacts/evaluation.json")
+        raise SystemExit(f"Evaluation failures; inspect {artifact / 'evaluation.json'}")
 
 
 if __name__ == "__main__":

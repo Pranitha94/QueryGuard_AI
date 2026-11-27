@@ -1,6 +1,6 @@
 # Executed evaluation
 
-Generated: 2026-11-26T15:22:51.394902+00:00
+Generated: 2026-11-27T08:41:53.262233+00:00
 
 SIMULATED / TEMPLATE (not an LLM)
 
@@ -8,8 +8,8 @@ Reference SQL independently executed as least-privilege reader; typed rows, 1e-6
 
 |Mode|Passed / total|SQL valid / queries|Execution correct|Nonquery correct|Mean ms|p95 ms|
 |---|---|---|---|---|---|---|
-|baseline|105/105|78/78|78|27/27|120.715|223.225|
-|schema-aware|105/105|78/78|78|27/27|119.664|221.658|
+|baseline|105/105|78/78|78|27/27|107.83|207.658|
+|schema-aware|105/105|78/78|78|27/27|107.762|202.704|
 
 Adversarial policy rejections: {'total': 40, 'rejected': 40, 'skipped': 0}
 

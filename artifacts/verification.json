@@ -1,7 +1,7 @@
 {
-  "recorded_at": "2026-11-26T15:32:45.630360+00:00",
+  "recorded_at": "2026-11-27T09:21:13.184955+00:00",
   "platform": "Windows",
-  "python": "3.10.20",
+  "python": "3.11.6",
   "database": {
     "server_version": "16.11",
     "listen_addresses": "127.0.0.1",
@@ -14,9 +14,9 @@
     "errors": "0",
     "failures": "0",
     "skipped": "0",
-    "tests": "65",
-    "time": "36.949",
-    "timestamp": "2026-11-26T20:52:12.828287+05:30"
+    "tests": "95",
+    "time": "24.256",
+    "timestamp": "2026-11-27T14:50:46.478480+05:30"
   },
   "evaluation_summaries": [
     {
@@ -29,8 +29,8 @@
       "execution_correct": 78,
       "nonquery_count": 27,
       "nonquery_correct": 27,
-      "mean_latency_ms": 120.715,
-      "p95_latency_ms": 223.225
+      "mean_latency_ms": 107.83,
+      "p95_latency_ms": 207.658
     },
     {
       "mode": "schema-aware",
@@ -42,8 +42,8 @@
       "execution_correct": 78,
       "nonquery_count": 27,
       "nonquery_correct": 27,
-      "mean_latency_ms": 119.664,
-      "p95_latency_ms": 221.658
+      "mean_latency_ms": 107.762,
+      "p95_latency_ms": 202.704
     }
   ],
   "adversarial_summary": {
@@ -52,7 +52,7 @@
     "skipped": 0
   },
   "secret_scan": {
-    "publishable_text_files_scanned": 53,
+    "publishable_text_files_scanned": 71,
     "local_secret_matches": 0
   },
   "docker": {

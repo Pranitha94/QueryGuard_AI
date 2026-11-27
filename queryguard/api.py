@@ -12,12 +12,14 @@ from time import monotonic
 from typing import Literal
 
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from queryguard.db import ROOT, inspect_schema, verify_runtime
 from queryguard.providers import OllamaProvider, TemplateProvider
+from queryguard.request_limits import RequestBodyLimit
 from queryguard.service import run_query
 
 
@@ -46,6 +48,7 @@ def create_app(provider=None, audit_path=None):
         yield
 
     app = FastAPI(title="QueryGuard AI", version="1.0.0", lifespan=lifespan)
+    app.add_middleware(RequestBodyLimit)
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(request, exc):
@@ -110,6 +113,19 @@ def create_app(provider=None, audit_path=None):
             raise HTTPException(429, "Query capacity reached.")
         try:
             result = run_query(body.question, body.mode, provider)
+            try:
+                # Check the actual HTTP encoding boundary before recording accepted success.
+                json.dumps(jsonable_encoder(result), allow_nan=False)
+            except (TypeError, ValueError, OverflowError):
+                result.update(
+                    status="execution_error",
+                    message="Result cannot be represented safely as JSON.",
+                    columns=[],
+                    rows=[],
+                    row_count=0,
+                    sql=None,
+                )
+                result.pop("summary", None)
             event = {
                 "request_id": secrets.token_hex(12),
                 "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -120,11 +136,11 @@ def create_app(provider=None, audit_path=None):
                 "row_count": result["row_count"],
             }
             with lock:
-                audit_path.parent.mkdir(parents=True, exist_ok=True)
-                # Bounded, data-minimal audit; no questions, SQL, tokens, values, DSNs or exception text.
-                if audit_path.exists() and audit_path.stat().st_size > 1_000_000:
-                    audit_path.replace(audit_path.with_suffix(".previous.jsonl"))
                 try:
+                    audit_path.parent.mkdir(parents=True, exist_ok=True)
+                    # Bounded, data-minimal audit; no questions, SQL, tokens, values, DSNs or exception text.
+                    if audit_path.exists() and audit_path.stat().st_size > 1_000_000:
+                        audit_path.replace(audit_path.with_suffix(".previous.jsonl"))
                     with audit_path.open("a", encoding="utf-8") as stream:
                         stream.write(json.dumps(event) + "\n")
                 except OSError:

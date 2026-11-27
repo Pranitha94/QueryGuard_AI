@@ -60,6 +60,18 @@ def _check(tree):
                 or on.left.table == on.right.table
             ):
                 raise PolicyError("Join requires an explicit column equality between aliases")
+            select = node.find_ancestor(exp.Select)
+            source = select.args.get("from_") if select is not None else None
+            preceding = {source.this.alias_or_name} if source is not None else set()
+            if select is not None:
+                for earlier in select.args.get("joins", []):
+                    if earlier is node:
+                        break
+                    preceding.add(earlier.this.alias_or_name)
+            joined = node.this.alias_or_name
+            referenced = {on.left.table, on.right.table}
+            if not joined or joined not in referenced or not (referenced - {joined}) <= preceding:
+                raise PolicyError("Join must connect the newly joined alias to an earlier source")
         if isinstance(node, exp.Star) and not isinstance(node.parent, exp.Count):
             raise PolicyError("Select explicit approved columns, not stars")
         if isinstance(node, exp.DataType) and (node.this.value not in ALLOWED_TYPES or node.args.get("kind")):

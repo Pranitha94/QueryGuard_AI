@@ -93,7 +93,7 @@ def main():
         check=False,
     )
     images = subprocess.run(
-        ["docker", "image", "inspect", "postgres:16.11", "python:3.10-slim"],
+        ["docker", "image", "inspect", "postgres:16.11", "python:3.11-slim"],
         capture_output=True,
         timeout=20,
         check=False,

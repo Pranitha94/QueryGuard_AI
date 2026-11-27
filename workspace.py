@@ -31,10 +31,19 @@ def request(method, path, **kwargs):
     headers = {"X-Session-Token": st.session_state.get("token", "")}
     with httpx.Client(timeout=45, trust_env=False) as client:
         response = client.request(method, API + path, headers=headers, **kwargs)
+        if response.status_code == 401 and path != "/sessions":
+            # A rejected session request has not executed SQL; retry once with a new token.
+            renewed = client.post(API + "/sessions")
+            renewed.raise_for_status()
+            st.session_state.token = renewed.json()["token"]
+            st.session_state.messages = []
+            headers["X-Session-Token"] = st.session_state.token
+            response = client.request(method, API + path, headers=headers, **kwargs)
     response.raise_for_status()
     return response.json()
 
 
+health = None
 try:
     health = request("GET", "/health")
     if "token" not in st.session_state:
@@ -44,6 +53,8 @@ except httpx.HTTPError:
         "Backend unavailable. Start the PostgreSQL database and API using the README commands, then refresh."
     )
     st.stop()
+
+assert health is not None, "Backend health must be available before rendering."
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -61,9 +72,13 @@ with st.sidebar:
         "Synthetic data only. No real customer records. Local single-user demo, not production authentication."
     )
     if st.button("Clear session history", width="stretch"):
-        request("DELETE", "/history")
-        st.session_state.messages = []
-        st.rerun()
+        try:
+            request("DELETE", "/history")
+        except httpx.HTTPError:
+            st.error("Session history could not be cleared. Please retry when the API is available.")
+        else:
+            st.session_state.messages = []
+            st.rerun()
 
 workspace, schema_tab, evaluation_tab, history_tab = st.tabs(
     ["Analytics workspace", "Schema explorer", "Evaluation lab", "Session history"]
@@ -75,6 +90,8 @@ with workspace:
     c.metric("Provider mode", "Template demo" if "SIMULATED" in health["provider"] else "Ollama")
     st.caption(
         "TEMPLATE DEMO: deterministic vocabulary, not general natural-language understanding. No prompt-comparison LLM claims."
+        if "SIMULATED" in health["provider"]
+        else "OLLAMA ADAPTER: configured local model; request failures are explicit, with no template fallback. Configuration alone is not proof of successful inference."
     )
     examples = [
         "Show revenue by category",
@@ -171,8 +188,21 @@ with evaluation_tab:
         report = request("GET", "/evaluation")
         st.warning(report["provider"] + " · These results are NOT evidence of live LLM quality.")
         st.caption("Executed " + report["generated_at"] + " · PostgreSQL " + report["postgresql"])
-        data = [{"mode": r["mode"], **r["summary"]} for r in report["runs"]]
-        st.dataframe(pd.DataFrame(data), hide_index=True, width="stretch")
+        data = []
+        for run in report["runs"]:
+            summary = run["summary"]
+            data.append(
+                {
+                    "Prompt setting": run["mode"],
+                    "Passed / total": f"{summary['passed']} / {summary['total']}",
+                    "SQL matches": f"{summary['execution_correct']} / {summary['expected_queries']}",
+                    "Nonquery matches": f"{summary['nonquery_correct']} / {summary['nonquery_count']}",
+                    "Mean ms": summary["mean_latency_ms"],
+                    "p95 ms": summary["p95_latency_ms"],
+                }
+            )
+        # Two summary rows do not need a canvas grid, which can fail to repaint in hidden tabs.
+        st.table(pd.DataFrame(data).set_index("Prompt setting"))
         st.json(report["adversarial_summary"])
         st.write(report["methodology"])
         st.caption(

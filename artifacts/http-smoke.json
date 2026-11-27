@@ -16,22 +16,22 @@
         "rows": [
           [
             "Electronics",
-            24975.0
+            24059.58
           ],
           [
             "Home",
-            22365.0
+            21545.28
           ],
           [
             "Office",
-            19755.0
+            19030.98
           ]
         ],
         "row_count": 3,
         "sql": "SELECT \"p\".\"category\" AS \"category\", SUM(\"i\".\"quantity\" * \"i\".\"unit_price\") AS \"revenue\" FROM \"analytics\".\"order_items\" AS \"i\" JOIN \"analytics\".\"products\" AS \"p\" ON \"i\".\"product_id\" = \"p\".\"product_id\" JOIN \"analytics\".\"orders\" AS \"o\" ON \"i\".\"order_id\" = \"o\".\"order_id\" WHERE \"o\".\"status\" = 'completed' GROUP BY \"p\".\"category\" ORDER BY \"revenue\" DESC, \"category\" LIMIT 200",
         "summary": "Returned 3 rows and 2 columns.",
-        "latency_ms": 180.551,
-        "request_id": "ceb614f57c9c5507cfdb2d63"
+        "latency_ms": 152.223,
+        "request_id": "b506f2e99dab80f89ddfff46"
       }
     },
     {
@@ -48,58 +48,58 @@
         "rows": [
           [
             "2024-01-01T00:00:00+05:30",
-            3617.25
+            3496.0
           ],
           [
             "2024-02-01T00:00:00+05:30",
-            3209.25
+            3068.28
           ],
           [
             "2024-03-01T00:00:00+05:30",
-            2866.0
+            2746.91
           ],
           [
             "2024-04-01T00:00:00+05:30",
-            3301.0
+            3177.91
           ],
           [
             "2024-05-01T00:00:00+05:30",
-            2661.5
+            2563.55
           ],
           [
             "2024-06-01T00:00:00+05:30",
-            3158.0
+            3053.91
           ],
           [
             "2024-07-01T00:00:00+05:30",
-            3682.5
+            3556.17
           ],
           [
             "2024-08-01T00:00:00+05:30",
-            3486.75
+            3378.55
           ],
           [
             "2024-09-01T00:00:00+05:30",
-            3165.75
+            3024.78
           ],
           [
             "2024-10-01T00:00:00+05:30",
-            3850.75
+            3717.03
           ],
           [
             "2024-11-01T00:00:00+05:30",
-            2953.0
+            2830.64
           ],
           [
             "2024-12-01T00:00:00+05:30",
-            2133.5
+            2053.46
           ]
         ],
         "row_count": 12,
         "sql": "SELECT DATE_TRUNC('MONTH', \"o\".\"order_date\") AS \"month\", SUM(\"i\".\"quantity\" * \"i\".\"unit_price\") AS \"revenue\" FROM \"analytics\".\"orders\" AS \"o\" JOIN \"analytics\".\"order_items\" AS \"i\" ON \"o\".\"order_id\" = \"i\".\"order_id\" WHERE \"o\".\"status\" = 'completed' AND \"o\".\"order_date\" >= CAST('2024-01-01' AS DATE) AND \"o\".\"order_date\" < CAST('2025-01-01' AS DATE) GROUP BY DATE_TRUNC('MONTH', \"o\".\"order_date\") ORDER BY \"month\" LIMIT 200",
         "summary": "Returned 12 rows and 2 columns.",
-        "latency_ms": 173.553,
-        "request_id": "4805d6451200fb9baa625033"
+        "latency_ms": 131.836,
+        "request_id": "da3065b35368b4a65766e9c0"
       }
     },
     {
@@ -113,8 +113,8 @@
         "rows": [],
         "row_count": 0,
         "sql": null,
-        "latency_ms": 51.9,
-        "request_id": "3fe807a09a15a6cc1abbcaf2"
+        "latency_ms": 54.536,
+        "request_id": "1842d6a291fe8ad705b196ab"
       }
     },
     {
@@ -128,8 +128,8 @@
         "rows": [],
         "row_count": 0,
         "sql": null,
-        "latency_ms": 46.176,
-        "request_id": "df8690dfd9033cb6f5879f83"
+        "latency_ms": 50.286,
+        "request_id": "650bde6d396f6b2e8ebbb366"
       }
     }
   ],

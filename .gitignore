@@ -9,3 +9,6 @@ __pycache__/
 *.pyc
 *.log
 .streamlit/secrets.toml
+build/
+dist/
+*.egg-info/

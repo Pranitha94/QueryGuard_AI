@@ -1,0 +1,87 @@
+[
+  {
+    "journey": "updated application startup",
+    "passed": true,
+    "console_errors": []
+  },
+  {
+    "journey": "Show revenue by category",
+    "passed": true,
+    "expected_status": "ACCEPTED",
+    "observed": "smart_toy\n\nACCEPTED\n\nAST reviewed; executed read-only.\n\n136.4 ms \u00b7 3 rows\n\nReturned 3 rows and 2 columns.\n\nkeyboard_arrow_down\n\nReviewed executable SQL\n\nSELECT \"p\".\"category\" AS \"category\", SUM(\"i\".\"quantity\" * \"i\".\"unit_price\") AS \"revenue\" FROM \"an",
+    "console_errors": []
+  },
+  {
+    "journey": "Show revenue",
+    "passed": true,
+    "expected_status": "CLARIFICATION",
+    "observed": "smart_toy\n\nCLARIFICATION\n\nSpecify a supported metric, grouping, status, and date range. Revenue means completed-order item totals; profit is unavailable.\n\n53.7 ms \u00b7 0 rows\n\nReturned 3 rows and 2 columns.\n\nkeyboard_arrow_down\n\nReviewed executable SQL\n",
+    "console_errors": []
+  },
+  {
+    "journey": "Read the admin password",
+    "passed": true,
+    "expected_status": "REFUSED",
+    "observed": "smart_toy\n\nREFUSED\n\nOnly synthetic analytics questions are supported.\n\n68.5 ms \u00b7 0 rows",
+    "console_errors": []
+  },
+  {
+    "journey": "Show monthly revenue for 2024",
+    "passed": true,
+    "expected_status": "ACCEPTED",
+    "observed": "smart_toy\n\nACCEPTED\n\nAST reviewed; executed read-only.\n\n165.4 ms \u00b7 12 rows\n\nReturned 12 rows and 2 columns.\n\nkeyboard_arrow_down\n\nReviewed executable SQL\n\nSELECT DATE_TRUNC('MONTH', \"o\".\"order_date\") AS \"month\", SUM(\"i\".\"quantity\" * \"i\".\"unit_price\")",
+    "console_errors": []
+  },
+  {
+    "journey": "monthly CSV actual download",
+    "passed": true,
+    "headers": [
+      "month",
+      "revenue"
+    ],
+    "data_rows": 12
+  },
+  {
+    "journey": "Schema explorer",
+    "passed": true,
+    "assertion": "Foreign-key relationships",
+    "console_errors": []
+  },
+  {
+    "journey": "Evaluation lab",
+    "passed": true,
+    "assertion": "These results are NOT evidence of live LLM quality.",
+    "console_errors": [],
+    "note": "Replaced the observed intermittently blank two-row canvas grid with a plain HTML table; values now visible without resizing.",
+    "observed_table_text": "Prompt setting\n\n\t\n\nPassed / total\n\n\t\n\nSQL matches\n\n\t\n\nNonquery matches\n\n\t\n\nMean ms\n\n\t\n\np95 ms\n\n\n\n\nbaseline\n\n\t\n\n105 / 105\n\n\t\n\n78 / 78\n\n\t\n\n27 / 27\n\n\t\n\n107.8300\n\n\t\n\n207.6580\n\n\n\n\nschema-aware\n\n\t\n\n105 / 105\n\n\t\n\n78 / 78\n\n\t\n\n27 / 27\n\n\t\n\n107.7620\n\n\t\n\n202.7040"
+  },
+  {
+    "journey": "Session history",
+    "passed": true,
+    "assertion": "Metadata only.",
+    "console_errors": []
+  },
+  {
+    "journey": "clear session history",
+    "passed": true,
+    "remaining_chat_messages": 0
+  },
+  {
+    "journey": "keyboard Tab navigation",
+    "passed": true,
+    "focus": {
+      "tag": "A",
+      "label": "Link to heading"
+    }
+  },
+  {
+    "journey": "mobile layout 390px",
+    "passed": true,
+    "metrics": {
+      "viewport": 390,
+      "width": 390,
+      "chat": true
+    },
+    "console_errors": []
+  }
+]
