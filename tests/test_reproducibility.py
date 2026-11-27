@@ -128,6 +128,8 @@ def test_native_refuses_occupied_port_before_start(tmp_path, monkeypatch):
 
 def test_smoke_options_are_configurable(monkeypatch, tmp_path):
     smoke = load_script("smoke")
+    monkeypatch.delenv("QG_API_URL", raising=False)
+    monkeypatch.delenv("QG_UI_URL", raising=False)
     monkeypatch.setenv("QG_API_PORT", "18000")
     monkeypatch.setenv("QG_UI_PORT", "18501")
     options = smoke.parse_options(["--output", str(tmp_path / "smoke.json")])
