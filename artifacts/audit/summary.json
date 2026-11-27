@@ -1,0 +1,69 @@
+{
+  "recorded_at": "2026-11-27T09:24:13.799394+00:00",
+  "audited_base_revision": "19472ece9771c5530439365d57fe95aa6b176f6a",
+  "native_python": "3.11.6",
+  "pytest": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "95",
+    "time": "24.256",
+    "timestamp": "2026-11-27T14:50:46.478480+05:30"
+  },
+  "original_suite_tests": 65,
+  "additional_tests": 30,
+  "browser_checks": 12,
+  "browser_all_passed": true,
+  "interview_questions": 40,
+  "demo_script_seconds": 120,
+  "evaluation": [
+    {
+      "mode": "baseline",
+      "total": 105,
+      "passed": 105,
+      "skipped": 0,
+      "expected_queries": 78,
+      "sql_valid_count": 78,
+      "execution_correct": 78,
+      "nonquery_count": 27,
+      "nonquery_correct": 27,
+      "mean_latency_ms": 107.83,
+      "p95_latency_ms": 207.658
+    },
+    {
+      "mode": "schema-aware",
+      "total": 105,
+      "passed": 105,
+      "skipped": 0,
+      "expected_queries": 78,
+      "sql_valid_count": 78,
+      "execution_correct": 78,
+      "nonquery_count": 27,
+      "nonquery_correct": 27,
+      "mean_latency_ms": 107.762,
+      "p95_latency_ms": 202.704
+    }
+  ],
+  "adversarial": {
+    "total": 40,
+    "rejected": 40,
+    "skipped": 0
+  },
+  "requested_deliverables": [
+    "AUDIT_REPORT.md",
+    "VERIFIED_FEATURES.md",
+    "TEST_RESULTS.md",
+    "KNOWN_LIMITATIONS.md",
+    "RESUME_BULLETS.md",
+    "INTERVIEW_QUESTIONS.md",
+    "DEMO_SCRIPT.md",
+    "COMPONENT_GUIDE.md"
+  ],
+  "independent_final_review": "passed; see artifacts/audit/final-review.json; exact-commit clone and CI are separate subsequent checks",
+  "limitations": [
+    "SIMULATED/TEMPLATE benchmark, not actual LLM quality",
+    "No live Ollama inference or full application Compose build/run",
+    "Source checkout supported; standalone application wheel unsupported"
+  ]
+}

@@ -13,7 +13,16 @@ A PostgreSQL analytics workspace that treats generated SQL as untrusted code. Fa
 - Exactly one allowlisted SELECT/CTE/set query, explicit lineage resolution and second AST review, 200-row cap, 2-second SQL timeout, 500-ms lock timeout, bounded complexity and concurrency.
 - REST session isolation, bounded metadata-only history/audit, no raw questions/results/secrets in audit; formula-neutralized CSV export.
 - 105 reviewable benchmark records: 78 queries, 12 clarifications, 15 refusals. Independent reference SQL runs against the same PostgreSQL seed; typed order-aware/multiset comparisons with numeric tolerance. Both template prompt settings passed 105/105; 40/40 SQL attacks rejected at the policy boundary. See `artifacts/EVALUATION.md` for measured latency, denominators and limitations.
-- Actual test counts and commands: `docs/VERIFICATION.md`; machine-readable test and evaluation evidence: `artifacts/`.
+- Current test counts and commands: `TEST_RESULTS.md`; historical checkpoints: `docs/VERIFICATION.md`. Machine-readable test/evaluation/audit evidence is under `artifacts/`.
+
+## Current audit and interview package
+
+The repaired native candidate passed **95 tests** with one installed-library deprecation warning. Python 3.11.6, Pillow 13.0.0 and Streamlit 1.67.0 were actually used. A point-in-time OSV query matched no advisories for the 61 repaired pins; this is not proof of complete dependency safety. Seed v2 now differentiates historical prices and customer order counts.
+
+- [Comprehensive audit](AUDIT_REPORT.md), [verified features](VERIFIED_FEATURES.md), [actual test/evaluation results](TEST_RESULTS.md), [known limitations](KNOWN_LIMITATIONS.md)
+- [Final resume bullets](RESUME_BULLETS.md), [40 interview questions and answers](INTERVIEW_QUESTIONS.md), [two-minute demo](DEMO_SCRIPT.md), [beginner component guide](COMPONENT_GUIDE.md)
+
+Historical evidence in `docs/VERIFICATION.md` and the prior release CI must not be mistaken for current audit acceptance. Current execution/review scope is recorded in `TEST_RESULTS.md` and `artifacts/audit/`.
 
 ## Architecture
 
@@ -37,27 +46,40 @@ Runtime provider code never imports benchmark questions, reference SQL or evalua
 
 ## Native Windows / Git Bash quick start
 
-Use Python 3.10 or 3.11 and PostgreSQL 16. This workspace was executed with isolated Python 3.10.20. Do not use a shared `pip`; bind every command to the project interpreter. Native Windows programs need `D:/...` paths, not `/d/...` arguments.
+Use **Python 3.11 or 3.12** and PostgreSQL 16, Git and Git Bash. The audit actually used Python 3.11.6; use a security-patched supported interpreter for broader use. Do not reuse a Python 3.10 environment: fixed Pillow 13.0.0 and compatible Streamlit 1.67.0 require Python 3.11+. Bind every command to the project interpreter, not shared `pip`. Native Windows arguments need `D:/...` paths, not `/d/...`.
+
+**Supported distribution: source checkout.** `pip install .` and a standalone application wheel are not supported; package discovery/resources are not configured as a full distribution. `pyproject.toml` supplies tooling/project metadata, not a promise that wheel installation works. Follow these requirements-and-scripts commands.
 
 ```bash
-cd D:/Hermes/Pranitha_projects/queryguard-ai
-# Fresh checkout only: py -3.10 -m venv .venv
+git clone https://github.com/Pranitha94/QueryGuard_AI.git
+cd QueryGuard_AI
+py -3.11 -m venv .venv
 .venv/Scripts/python.exe -m pip install -r requirements.lock.txt
 .venv/Scripts/python.exe scripts/bootstrap.py
 bash scripts/run_api.sh
-# Separate terminal:
+# In another Git Bash terminal, cd into the same checkout:
 bash scripts/run_ui.sh
 ```
 
-Bootstrap creates only `.local/pgdata`, bound to `127.0.0.1:55432`, with SCRAM passwords generated into gitignored `.env`. Admin and runtime credentials are separate. It refuses an occupied port before first initialization, seeds idempotently and grants only approved columns. Default binaries: `C:/Program Files/PostgreSQL/16/bin`; override `PG_BIN` if needed. Do not point `QG_ADMIN_DSN` at another project or an existing business database: setup intentionally manages this dedicated database and role.
+If `py` is unavailable, use an installed Python 3.11/3.12 executable's full path for `-m venv`. Bootstrap initializes only `.local/pgdata` on loopback, generates private SCRAM credentials in ignored `.env`, creates the dedicated `queryguard` database when absent, seeds managed synthetic rows and grants approved columns. It refuses unknown occupied ports/storage or inconsistent endpoints. Default binaries: `C:/Program Files/PostgreSQL/16/bin`; override `PG_BIN` if needed. **Never target an unrelated/production database.** Seed v2 updates its managed item prices/customer assignments on rerun; do not treat setup as read-only.
 
-When an agent/sandbox kills a detached `pg_ctl` child or Windows reports `0xC0000142`, run the dedicated database in a persistent foreground terminal before bootstrap:
+For a second checkout, select free ports **before its first bootstrap** and use consistent exports in both service terminals:
 
 ```bash
-'C:/Program Files/PostgreSQL/16/bin/postgres.exe' -D D:/Hermes/Pranitha_projects/queryguard-ai/.local/pgdata
+export QG_DB_PORT=55435 QG_API_PORT=8002 QG_UI_PORT=8503
+export QG_API_URL="http://127.0.0.1:$QG_API_PORT"
+.venv/Scripts/python.exe scripts/bootstrap.py
+bash scripts/run_api.sh
+# Another terminal with the same exports:
+bash scripts/run_ui.sh
+.venv/Scripts/python.exe scripts/smoke.py --output .local/http-smoke.json
 ```
 
-That foreground/persistent path was actually used for this verification. Do not run a second server on the same data directory. Inspect state with `pg_ctl.exe -D <that-directory> status`; stop only this dedicated instance using `pg_ctl.exe -D <that-directory> -m fast stop`.
+Port settings accept integers from 1 to 65535. Existing native `.env` retains its database endpoint; conflicting overrides are refused instead of redirecting an existing cluster. `QG_API_URL` points the UI at the alternate API; an alternate API bind port alone does not change the UI destination.
+
+For an already running dedicated external PostgreSQL server, supply **process environment** `QG_ADMIN_DSN`, `QG_DATABASE_DSN` and `QG_READER_PASSWORD`. Both DSNs must explicitly target `queryguard`; the reader must be `qg_reader`, use the matching password and refer to the same endpoint. Bootstrap now creates an absent `queryguard` database through maintenance `postgres`; admin therefore needs maintenance access and database-creation privilege. No manual DB precreation is needed. External mode is selected by process environment, not an arbitrary `.env` file. Never copy somebody else's generated credentials. Linux external-server setup uses Python 3.11/3.12, `.venv/bin/python` and the same scripts; only the configured backend CI path is verified on Linux, not every desktop installation.
+
+If native initialization succeeds but PostgreSQL startup fails, check only this project's cluster with `pg_ctl.exe -D <this-checkout>/.local/pgdata status`. The foreground workaround requires an **already initialized directory**: run `postgres.exe -D <absolute-native-checkout-path>/.local/pgdata` in a separate persistent terminal only if no server uses that directory, then rerun bootstrap. It does not initialize a cluster. The repaired `pg_ctl` launch avoids inherited captured pipes; no claim is made that every underlying Windows `0xC0000142` cause was diagnosed. Never start two servers on one directory or stop another project's server.
 
 Workspace: `http://127.0.0.1:8501` · API: `http://127.0.0.1:8000` · OpenAPI: `http://127.0.0.1:8000/docs`.
 
@@ -77,6 +99,18 @@ bash scripts/verify.sh
 # With API and UI running:
 .venv/Scripts/python.exe scripts/smoke.py
 ```
+
+`verify.sh` intentionally writes current test/evaluation reports under `artifacts/`; smoke also updates its saved evidence. Inspect Git status afterward. For a source-clean audit, use:
+
+```bash
+QG_EVIDENCE_DIR=.local/evidence bash scripts/verify.sh
+.venv/Scripts/python.exe scripts/evaluate.py --output-dir .local/evidence
+.venv/Scripts/python.exe scripts/smoke.py \
+  --api-url http://127.0.0.1:8000 --ui-url http://127.0.0.1:8501 \
+  --output .local/http-smoke.json
+```
+
+The UI `/evaluation` endpoint reads **saved `artifacts/evaluation.json`**, not arbitrary redirected evaluator output. A clone initially displays historical committed evidence. Run the evaluator with its default output and refresh to display a newly executed report; inspect timestamp, provider and fixture hashes. Presence of a report is not proof that this installation executed it.
 
 ## Provider configuration
 
@@ -107,7 +141,7 @@ Optional Ollama (unexecuted live): configure an **already installed** local mode
 QG_PROVIDER=ollama QG_OLLAMA_MODEL=your-existing-local-model bash scripts/run_api.sh
 ```
 
-Adapter uses local `127.0.0.1:11434/api/chat`, JSON schema `format`, `stream=false`, temperature 0, strict Pydantic parsing, a 30-second HTTP timeout and no silent template fallback. Baseline supplies policy instructions; schema-aware additionally supplies retrieved live schema/relationship JSON. Relationship closure includes all four tables in this connected toy schema, so this is not a demonstrated large-schema retrieval optimization. Provider errors are observable, not disguised as valid answers.
+Adapter uses local `127.0.0.1:11434/api/chat`, JSON schema `format`, `stream=false`, temperature 0, strict Pydantic parsing, a 65,536-byte streaming response guard, identity encoding and a 30-second **inactivity/operation timeout, not an end-to-end deadline**. There is no silent template fallback. Baseline supplies policy instructions; schema-aware additionally supplies retrieved live schema/relationship JSON. Relationship closure includes all four tables in this connected toy schema, so this is not a demonstrated large-schema retrieval optimization. Provider errors are observable, not disguised as valid answers.
 
 ## REST contract
 
@@ -122,7 +156,7 @@ Adapter uses local `127.0.0.1:11434/api/chat`, JSON schema `format`, `stream=fal
 
 Query outcomes: `accepted`, `clarification`, `refused`, `rejected`, `provider_error`, `execution_error`. Safe outcome responses use HTTP 200 so callers inspect `status`; transport/validation/auth/capacity failures use 4xx/503. Validation errors do not echo input. Session tokens isolate history but are **not authentication**; anyone able to reach the API can create a session. Defaults bind loopback. Do not expose these ports publicly.
 
-## Docker recipe (unexecuted) and verified GitHub CI
+## Docker recipe (application stack unexecuted) and CI provenance
 
 ```bash
 # Copy .env.example to .env.docker; replace BOTH placeholders with distinct
@@ -130,9 +164,9 @@ Query outcomes: `accepted`, `clarification`, `refused`, `rejected`, `provider_er
 docker compose --env-file .env.docker up --build
 ```
 
-Compose has a dedicated internal-only DB network, one-shot setup, runtime API with reader DSN only, UI with API URL only, loopback published HTTP ports and healthchecks. The DB has no host port. Native and Docker demos use the same HTTP ports: stop one before starting the other. Docker daemon was reachable and Compose configuration validated, but `postgres:16.11` and `python:3.10-slim` base images were absent; no large image/dependency downloads or container build/run were undertaken. Do not treat these files as a tested deployment. Pinning image digests and dependency hashes is left for a release process.
+Compose has a dedicated internal-only DB network, one-shot setup, runtime API with reader DSN only, UI with API URL only, loopback published HTTP ports and healthchecks. The DB has no host port. Native and Docker demos use the same HTTP ports: stop one before starting the other. The full application Compose build/run was not verified in this audit. Its current recipe uses PostgreSQL 16.11 and Python 3.11; only configuration parsing and the separately recorded CI PostgreSQL-service path are narrower executed evidence. Do not treat these files as a tested deployment. Pinning image digests and dependency hashes is left for a release process.
 
-`.github/workflows/verify.yml` was published and **passed on an Ubuntu GitHub-hosted runner** for commit `59d4c97641cffcf526fb1e3e4d3d4cd8bd812180`: [executed workflow](https://github.com/Pranitha94/QueryGuard_AI/actions/runs/45850412986). Verified successful steps include fresh locked dependency installation, the PostgreSQL service and bootstrap, lint/format/compile, pytest, benchmark evaluation and evidence upload. This verifies the configured Linux CI path, not a full Docker Compose application deployment. `requirements.lock.txt` captures exact installed direct/transitive versions; it is not a vulnerability audit or hash-verified supply-chain guarantee. Machine-readable remote status is in `artifacts/github-ci.json`.
+**Historical release CI:** `.github/workflows/verify.yml` passed on Ubuntu for commit `59d4c97641cffcf526fb1e3e4d3d4cd8bd812180`: [recorded workflow](https://github.com/Pranitha94/QueryGuard_AI/actions/runs/45850412986), with status in `artifacts/github-ci.json`. That run is not approval of later audit changes. The current audit's exact tested revision and CI status, if executed, are recorded in `TEST_RESULTS.md` and `artifacts/audit/`. The workflow installs locked dependencies, seeds a PostgreSQL service and runs lint/format/compile, pytest and evaluation; this does not verify the full application Compose deployment or live inference. Pins are not a vulnerability audit or hash-verified supply-chain guarantee.
 
 ## Evaluation and security reading
 
