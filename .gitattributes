@@ -1,0 +1,2 @@
+# Git Bash requires LF even when Windows core.autocrlf is enabled.
+*.sh text eol=lf
